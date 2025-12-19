@@ -21,7 +21,7 @@ bootBuildImage {
     // Controlled by the -P publish=true flag in the GitHub Action
     publish = project.hasProperty('publish') ? project.property('publish').toBoolean() : false
 
-    env = [
+    environment = [
             "BP_JVM_VERSION": "25",
             "BP_JVM_ID": "temurin"
     ]
