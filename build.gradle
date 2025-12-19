@@ -16,7 +16,7 @@ java {
 
 bootBuildImage {
     // Default name if no override is provided in the command line
-    imageName = "ghcr.io/${project.group}/${project.name}:latest"
+    imageName = "ghcr.io/lordyorden/${project.name.toLowerCase()}:latest"
 
     // Controlled by the -P publish=true flag in the GitHub Action
     publish = project.hasProperty('publish') ? project.property('publish').toBoolean() : false

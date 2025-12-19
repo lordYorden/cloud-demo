@@ -24,11 +24,7 @@ jobs:
           cache: 'gradle'
 
       - name: Build and Push with Gradle
-        # We override the image name here to use 'latest' for the main branch
-        run: |
-          ./gradlew bootBuildImage \
-            --imageName=ghcr.io/${{ github.repository }}:latest \
-            -Ppublish=true
+        run: ./gradlew bootBuildImage -Ppublish=true
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
