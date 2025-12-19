@@ -25,6 +25,9 @@ target/
 build/
 out/
 
+### docker image
+images/
+
 *.DS_Store
 *.class
 *.swp
