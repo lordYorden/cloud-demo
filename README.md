@@ -1,38 +1,56 @@
-# Getting Started
+# 12-Factor App Demo
 
-### Reference Documentation
+This project demonstrates 4 key principles of the [12-Factor App methodology](https://12factor.net/) using Spring Boot, Docker and GitHub Actions.
 
-For further reference, please consider the following sections:
+## Submitted by
 
-* [Official Gradle documentation](https://docs.gradle.org)
-* [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/4.0.1/gradle-plugin)
-* [Create an OCI image](https://docs.spring.io/spring-boot/4.0.1/gradle-plugin/packaging-oci-image.html)
-* [Spring Data MongoDB](https://docs.spring.io/spring-boot/4.0.1/reference/data/nosql.html#data.nosql.mongodb)
-* [Spring Boot DevTools](https://docs.spring.io/spring-boot/4.0.1/reference/using/devtools.html)
-* [Docker Compose Support](https://docs.spring.io/spring-boot/4.0.1/reference/features/dev-services.html#features.dev-services.docker-compose)
-* [Spring Web](https://docs.spring.io/spring-boot/4.0.1/reference/web/servlet.html)
+- Yarden Perets
+- Daniel Jerbi
+- Ben Aharoni
+- Gal Deri
 
-### Guides
 
-The following guides illustrate how to use some features concretely:
+## 1. Codebase
+> **One codebase tracked in revision control, many deploys.**
 
-* [Accessing Data with MongoDB](https://spring.io/guides/gs/accessing-data-mongodb/)
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
+The application source is tracked in this single Git repository. We use **GitHub Actions** to ensure that every push to the `main` branch results in a consistent, automated build process. No environment-specific code exists within the repository.
 
-### Additional Links
+- **Source Control:** Git & GitHub
+- **Flow:** Continuous Integration (CI) on every push to `main`.
 
-These additional references should also help you:
+## 2. Dependencies
+> **Explicitly declare and isolate dependencies.**
 
-* [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
+All dependencies are explicitly declared in the `build.gradle` file. This ensures that the project does not rely on the implicit existence of any system-wide packages or libraries. By using Gradle, we guarantee that every build uses the exact same versions of the required libraries, providing a reproducible build environment across different machines and CI/CD runners.
 
-### Docker Compose support
+## 3. Config
+> **Store config in the environment.**
 
-This project contains a Docker Compose file named `compose.yaml`.
-In this file, the following services have been defined:
+All configuration that varies between deployments (such as database credentials, API keys, or resource handles) is stored in environment variables. We use a `config.env` file to manage these variables locally and in production. The application code contains no constants or hardcoded secrets, strictly following the requirement to keep config separate from code.
 
-* mongodb: [`mongo:latest`](https://hub.docker.com/_/mongo)
+- **Stored in:** `config.env`
 
-Please review the tags of the used images and set them to the same as you're running in production.
+## 4. Build, Release, Run
+> **Strictly separate build and run stages.**
 
+The deployment lifecycle is divided into three mutually exclusive stages:
+
+1.  **Build:** Triggered by a push to `main`. GitHub Actions compiles the code and creates a Docker image.
+2.  **Release:** The resulting image is tagged as `latest` and pushed to the **GitHub Container Registry (GHCR)** And a release is created which is an immutable artifact ready for execution.
+3.  **Run:** The application is launched in the execution environment by pulling the image and providing the `config.env` from the release
+
+**Run (Execution Phase):**
+```bash
+# Pull the latest release
+docker pull ghcr.io/lordyorden/cloud-demo:latest
+
+# Run with environment-specific config
+docker run -p <port config> --env-file config.env ghcr.io/lordyorden/cloud-demo:latest
+```
+
+---
+
+### Prerequisites
+- JDK 25
+- Docker
+- Gradle 8.10+
