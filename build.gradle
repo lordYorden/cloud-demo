@@ -22,9 +22,11 @@ bootBuildImage {
     imageName = "ghcr.io/${name}/${project.name.toLowerCase()}:${version}"
 
     // Controlled by the -P publish=true flag in the GitHub Action
-    def publish = project.hasProperty('publish') ? project.property('publish').toBoolean() : false
+    def shouldPublish = project.hasProperty('publish') ? project.property('publish').toBoolean() : false
+    publish = shouldPublish
 
-    if(publish) {
+
+    if(shouldPublish) {
         environment = [
                 "BP_JVM_VERSION": "25",
                 "BP_JVM_ID": "temurin"
